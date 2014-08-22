@@ -59,6 +59,7 @@ Feature labels use lower Camel Class representation [http://en.wikipedia.org/wik
 
 ###  Data Processing
 The data is processed in the following steps:
+
 1. The data set metadata is imported from the "UCI HAR Dataset" top level files:
   - activity_labels.txt contains the labels and activity code
   - features.txt contains the labels for each feature in the data set.
