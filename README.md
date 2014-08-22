@@ -52,9 +52,10 @@ The data files of interest within the UCI HAR Dataset are:
 ###  Output Data Set
 The output data set is derived from processing the summary statistics information contained within the original data set.
  
-The output data follows the guidelines of a "Wide" Tidy data set []. 
+The output data follows the guidelines of a "Wide" Tidy data set [http://vita.had.co.nz/papers/tidy-data.pdf]. 
+
 Feature labels use lower Camel Class representation [http://en.wikipedia.org/wiki/CamelCase] to increase readability of long feature names.
-  
+
 ###  Data Processing
 The data is processed in the following steps:
 <ol>
