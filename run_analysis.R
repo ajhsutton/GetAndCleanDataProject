@@ -57,20 +57,25 @@ trainDir <-paste(dir_name,"train",sep="/")
 # Get the Subject, Activity and Data
 # Train Data
 trainFile <- paste(trainDir,"X_train.txt",sep="/")
-trainData <- read.table(trainFile)
+trainData <- read.table(trainFile,
+                        colClasses = "numeric")
 # Activity Data
 trainActivityFile <- paste(trainDir,"y_train.txt",sep="/")
-trainActivityData <- read.table(trainActivityFile)
+trainActivityData <- read.table(trainActivityFile,
+                                col.names = "Activity",
+                                colClasses = "integer")
 # Subject Data
 trainSubjectFile <- paste(trainDir,"subject_train.txt",sep="/")
-trainSubjectData <- read.table(trainSubjectFile)
+trainSubjectData <- read.table(trainSubjectFile,
+                               col.names = "Subject",
+                               colClasses = "integer")
 
 # Form a single data set with Activity, Subject and Train Data
 trainDataSet <- cbind(trainActivityData,trainSubjectData,trainData)
 
 # # -----------------
 # # Merge Test and Train Data Sets
-mergedDataSet <- testDataSet
+mergedDataSet <- rbind(testDataSet,trainDataSet)
 
 # ------------------------------------------------------------------------------
 # 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
@@ -151,3 +156,65 @@ colnames(outputDataset) <- c("Activity","Subject",extractedFeatureLabels)
 # Data can be read into R Studio using tidyData <- read.table("tidyData.txt",header =TRUE)
 filename <- "tidyData.txt"
 write.table(outputDataset,filename,row.names =FALSE)
+
+# ------------------------------------------------------------------------------
+# Generate a plain text version of each Feature Label for Codebook
+# Copy the labels
+codeBook <- extractedFeatureLabels
+# Write Codebook file
+codeBook <- gsub("Mean","Mean ",codeBook)
+codeBook <- gsub("StandardDeviation","Standard Deviation ",codeBook)
+codeBook <- gsub("time","Time domain ",codeBook)
+codeBook <- gsub("frequency","Frequency domain ",codeBook)
+codeBook <- gsub("Body","Body ",codeBook)
+codeBook <- gsub("Gravity","Gravity ",codeBook)
+codeBook <- gsub("Acceleration","Acceleration ",codeBook)
+codeBook <- gsub("Jerk","Jerk ",codeBook)
+codeBook <- gsub("Gyroscopic","Gyroscopic ",codeBook)
+codeBook <- gsub("Magnitude","Magnitude ",codeBook)
+# Axis
+codeBook <- gsub("X","(X Axis)",codeBook)
+codeBook <- gsub("Y","(Y Axis)",codeBook)
+codeBook <- gsub("Z","(Z Axis)",codeBook)
+
+codeFile <- "codeBook_data.txt"
+write("Code Book Data file\n", file = codeFile, append = FALSE)
+nCodeBook <- length(codeBook)
+
+# Write Activity Data to Code Book
+write("[1] Activity", file = codeFile, append = TRUE)
+write("\t Activity Description", file = codeFile, append = TRUE)
+for (rowNum in 1:nrow(activityIndex)){
+     ptCodeBookString <- sprintf("\t\t %s", activityIndex[rowNum,2])
+     write(ptCodeBookString, file = codeFile, append = TRUE)   
+}
+write("\n\n", file = codeFile, append = TRUE)
+
+# For each column entry in the data series, compute the min and max values
+minCodeBook <- lapply(outputDataset,FUN = min)
+maxCodeBook <- lapply(outputDataset,FUN = max)
+
+# Write Subject Data to Code Book
+write("[2] Subject", file = codeFile, append = TRUE)
+write("\t Test Subject", file = codeFile, append = TRUE)
+for (rowNum in 1:nrow(activityIndex)){
+     ptCodeBookString <- sprintf("\t\t MIN: %s, MAX: %s", minCodeBook[2], maxCodeBook[2])
+}
+write("\n\n", file = codeFile, append = TRUE)
+
+# Write Codebook data
+# For each entry in the Code Book (ignore Activity)
+for (rowNum in 1:nCodeBook){
+     # Construct the Code Row and Feature Lable using string formatting command
+     rowString <- sprintf("[%d] %s",rowNum +2 , extractedFeatureLabels[rowNum])
+     # Write the row to file
+     write(rowString, file = codeFile, append = TRUE)
+     # Construct the plain text code book entry
+     ptCodeBookString <- sprintf("\t %s", codeBook[rowNum])
+     write(ptCodeBookString, file = codeFile, append = TRUE)
+     # Write summary Statistics
+     summaryString <- sprintf("\t MIN: %f,  MAX: %f\n\n",
+                              minCodeBook[rowNum+2],
+                              maxCodeBook[rowNum+2])
+     write(summaryString, file = codeFile, append = TRUE)
+}
