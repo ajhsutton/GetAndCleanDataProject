@@ -59,45 +59,35 @@ Feature labels use lower Camel Class representation [http://en.wikipedia.org/wik
 
 ###  Data Processing
 The data is processed in the following steps:
-<ol>
-<li> The data set metadata is imported from the "UCI HAR Dataset" top level files:
+1. The data set metadata is imported from the "UCI HAR Dataset" top level files:
   - activity_labels.txt contains the labels and activity code
   - features.txt contains the labels for each feature in the data set.
-  </li>
-<li> For each of the "test" and "train" data sets, the "X" data and "y" subject information are imported and combined into a single data frame using cbind()</li>
-<li> The "test" and "train" data sets are combined into a single data set using rbind()</li>
-<li> Measurements relating to the mean or standard deviation of a parameter are extracted using a Regular Expression
+2. For each of the "test" and "train" data sets, the "X" data and "y" subject information are imported and combined into a single data frame using cbind()
+3. The "test" and "train" data sets are combined into a single data set using rbind()
+4. Measurements relating to the mean or standard deviation of a parameter are extracted using a Regular Expression
   - regex string: "\\.*-(mean|std){1}\\(\\)" 
   - The regex will search for feature labels containing 1 instance of either "mean" or "std" followed by "()"
   - Identified labels are returned using "grep()"
   - Measurement data is subsetted based upon labels returned by the regex, plus Activity and Subject data
-</li>
-<li> Activity names are converted to lowerCamelClass
+5/ Activity names are converted to lowerCamelClass
   - Helper functions are included for conversion to Upper and Lower Camel Case
   - Lower Camel Case was selected due to increase readability for long names
-  </li>
-<li> Activity data is sorted first alphabetically by activity and then numerically, by subject number.</li>
-<li> Regular expressions are used to convert the feature names into human readable, lower camel case representation without abbreviation [as recommended in Coursera "Getting and Cleaning Data" lecture: Components of Tidy Data]  
+6. Activity data is sorted first alphabetically by activity and then numerically, by subject number.</li>
+7. Regular expressions are used to convert the feature names into human readable, lower camel case representation without abbreviation [as recommended in Coursera "Getting and Cleaning Data" lecture: Components of Tidy Data]  
   - Punctuation such as "( )" & "-" are removed.
   - Abbreviations are expanded 
-    mean -> Mean
-    std -> StandardDeviation
-    Acc -> Acceleration
-    Gyro -> Gyroscopic
-    Mag -> Magnitude
+    * mean -> Mean
+    * std -> StandardDeviation
+    * Acc -> Acceleration
+    * Gyro -> Gyroscopic
+    * Mag -> Magnitude
   - time ("^t") and frequency ("^f") features are explicitly identified 
-  </li>
-<li> A new summary data set is constructed for each feature: 
-  * Measurements are groups by (activity, subject).
-  * The mean of each group (ie. activity & subject) is computed.
-  * a new "tidy" data set is formed from the computed means.
-  </li>
-<li> The new, tidy data is written to a file "tidyData.txt" using the command:
-  write.table(outputDataset,filename,row.names =FALSE)"
-  * The data may be read into R using 
-  read.table("tidyData.txt",header =TRUE)
-  </li>
-<li> A summary code book is written to a new file "codeBook_data.txt"
-  * The file contains each feature in the new data set, plus a summary of the data format.
-  </li>
-</ol>
+8. A new summary data set is constructed for each feature: 
+  - Measurements are groups by (activity, subject).
+  - The mean of each group (ie. activity & subject) is computed.
+  - a new "tidy" data set is formed from the computed means.
+9. The new, tidy data is written to a file "tidyData.txt" using the command: write.table(outputDataset,filename,row.names =FALSE)"
+  - The data may be read into R using: read.table("tidyData.txt",header =TRUE)
+10. A summary code book is written to a new file "codeBook_data.txt"
+  - The file contains each feature in the new data set, plus a summary of the data format.
+  
