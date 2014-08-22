@@ -147,6 +147,7 @@ extractedFeatureLabels <- gsub("Mag","Magnitude",extractedFeatureLabels)
 
 # ------------------------------------------------------------------------------
 # 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+library(stats)
 ind <- list(orderedDataSet$ActivityLabel,orderedDataSet$Subject)
 outputDataset <- aggregate(orderedDataSet[,4:ncol(orderedDataSet)],ind,FUN = mean,na.rm = TRUE)
 colnames(outputDataset) <- c("Activity","Subject",extractedFeatureLabels)

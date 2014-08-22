@@ -53,9 +53,8 @@ h3.  Output Data Set
 The output data set is derived from processing the summary statistics information contained within the original data set.
  
 The output data follows the guidelines of a "Wide" Tidy data set []. 
-Feature labels use lower Camel Class representation [http://en.wikipedia.org/wiki/CamelCase].
+Feature labels use lower Camel Class representation [http://en.wikipedia.org/wiki/CamelCase] to increase readability of long feature names.
   
- 
 h3.  Data Processing
 The data is processed in the following steps:
 <ol>
@@ -68,14 +67,28 @@ The data is processed in the following steps:
 <li> Measurements relating to the mean or standard deviation of a parameter are extracted using a Regular Expression
   - regex string: "\\.*-(mean|std){1}\\(\\)" 
   - The regex will search for feature labels containing 1 instance of either "mean" or "std" followed by "()"
+  - Identified labels are returned using "grep()"
+  - Measurement data is subsetted based upon labels returned by the regex, plus Activity and Subject data
 </li>
-<li> Activity names are converted to lowerCamelClass</li>
-<li> Activity data is sorted alphabetically based upon activity and numerically based upon subject number.</li>
-<li> Regular expressions are used to convert the feature names into human readable, lower camel case representation without abbreviation [as recommended in Coursera "Getting and Cleaning Data" lecture: Components of Tidy Data,  </li>
+<li> Activity names are converted to lowerCamelClass
+  - Helper functions are included for conversion to Upper and Lower Camel Case
+  - Lower Camel Case was selected due to increase readability for long names
+  </li>
+<li> Activity data is sorted first alphabetically by activity and then numerically, by subject number.</li>
+<li> Regular expressions are used to convert the feature names into human readable, lower camel case representation without abbreviation [as recommended in Coursera "Getting and Cleaning Data" lecture: Components of Tidy Data]  
+  - Punctuation such as "( )" & "-" are removed.
+  - Abbreviations are expanded 
+    mean -> Mean
+    std -> StandardDeviation
+    Acc -> Acceleration
+    Gyro -> Gyroscopic
+    Mag -> Magnitude
+  - time ("^t") and frequency ("^f") features are explicitly identified 
+  </li>
 <li> A new summary data set is constructed for each feature: 
-  * Measurements are sorted by (activity, subject)
-  * The mean of each feature is computed for each activity and subject
-  * a new data set is formed from the computed means.
+  * Measurements are groups by (activity, subject).
+  * The mean of each group (ie. activity & subject) is computed.
+  * a new "tidy" data set is formed from the computed means.
   </li>
 <li> The new, tidy data is written to a file "tidyData.txt" using the command:
   write.table(outputDataset,filename,row.names =FALSE)"
