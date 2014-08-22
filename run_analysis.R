@@ -17,20 +17,24 @@
 # Open the data set from the working directory  
 dir_name <- "UCI HAR Dataset"
 
-# -----------------
-# Get Labels
-# Get Activity Labels
+# ------------------------------------------------------------------------------
+# STEP 1
+# Get Activity and Feature Labels from text files
+# Get Activity Labels from: activity_labels.txt
 activityFile <- paste(dir_name,"activity_labels.txt",sep="/");
 activityIndex <- read.table(activityFile, 
                             col.names = c("Activity","ActivityLabel"),
                             colClasses = c("factor","character"))  
 
-# Get Features Labels
+# Get Features Labels from: features.txt
 featureLabelFile <- paste(dir_name,"features.txt",sep="/");
 featureIndex <- read.table(featureLabelFile, 
                            col.names = c("Feature","FeatureLabel"),
                            colClasses = c("factor","character"))  
-# -----------------
+# ------------------------------------------------------------------------------
+# STEP 2
+# Get Test and Train data sets
+
 # Get Test data Set
 testDir <-paste(dir_name,"test",sep="/") 
 # Test Data
@@ -73,11 +77,13 @@ trainSubjectData <- read.table(trainSubjectFile,
 # Form a single data set with Activity, Subject and Train Data
 trainDataSet <- cbind(trainActivityData,trainSubjectData,trainData)
 
-# # -----------------
-# # Merge Test and Train Data Sets
+# ------------------------------------------------------------------------------
+# Step 3
+# Merge Test and Train Data Sets
 mergedDataSet <- rbind(testDataSet,trainDataSet)
 
 # ------------------------------------------------------------------------------
+# Step 4
 # 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
 #    - Measurements on mean will contain string "-mean()"
 #    - Measurements on standard deviation will contain string "-std()"
@@ -92,6 +98,7 @@ extractedData <- mergedDataSet[,extractedcolNums]
 extractedFeatureLabels <- featureIndex[featureColNums,2]
 
 # ------------------------------------------------------------------------------
+# STEP 5
 # 3. Uses descriptive activity names to name the activities in the data set
 # Rename Activity Names to lower Camle Case
 # -----------------
@@ -120,11 +127,16 @@ activityIndex[,2] <- sapply(activityIndex[,2],toLowerCamelClass,sep = "_")
 activityDataSet <- merge(activityIndex,extractedData)
 # Remove the Activity number
 activityDataSet <- activityDataSet[,-1]
+
+# ------------------------------------------------------------------------------
+# STEP 6
+# Sort/order the data based upon Activity and Subject
 # USe the plyr package to order the data
 library(plyr)
 orderedDataSet <- arrange(activityDataSet,ActivityLabel, Subject)
 # ------------------------------------------------------------------------------
-# 4. Appropriately label the data set with descriptive variable names.
+# STEP 7
+# Requirement 4. Appropriately label the data set with descriptive variable names.
 # Relabel column names to "lower Camel Class" and apply rules
 #    - Remove "()" and "-"
 #    - t-> "time" & f -> "frequency"
@@ -142,23 +154,26 @@ extractedFeatureLabels <- gsub("^t","time",extractedFeatureLabels)
 extractedFeatureLabels <- gsub("^f","frequency",extractedFeatureLabels)
 extractedFeatureLabels <- gsub("(Body)+","Body",extractedFeatureLabels)
 extractedFeatureLabels <- gsub("Acc","Acceleration",extractedFeatureLabels)
-extractedFeatureLabels <- gsub("Gyro","Gyroscopic",extractedFeatureLabels)
+extractedFeatureLabels <- gsub("Gyro","Gyroscope",extractedFeatureLabels)
 extractedFeatureLabels <- gsub("Mag","Magnitude",extractedFeatureLabels)
 
 # ------------------------------------------------------------------------------
-# 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+# STEP 8
+# Requirement 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 library(stats)
 ind <- list(orderedDataSet$ActivityLabel,orderedDataSet$Subject)
 outputDataset <- aggregate(orderedDataSet[,4:ncol(orderedDataSet)],ind,FUN = mean,na.rm = TRUE)
 colnames(outputDataset) <- c("Activity","Subject",extractedFeatureLabels)
 
 # ------------------------------------------------------------------------------
+# STEP 9
 # Write out the 'Tidy Data Set'
 # Data can be read into R Studio using tidyData <- read.table("tidyData.txt",header =TRUE)
 filename <- "tidyData.txt"
 write.table(outputDataset,filename,row.names =FALSE)
 
 # ------------------------------------------------------------------------------
+# STEP 10
 # Generate a plain text version of each Feature Label for Codebook
 # Copy the labels
 codeBook <- extractedFeatureLabels
@@ -171,7 +186,7 @@ codeBook <- gsub("Body","Body ",codeBook)
 codeBook <- gsub("Gravity","Gravity ",codeBook)
 codeBook <- gsub("Acceleration","Acceleration ",codeBook)
 codeBook <- gsub("Jerk","Jerk ",codeBook)
-codeBook <- gsub("Gyroscopic","Gyroscopic ",codeBook)
+codeBook <- gsub("Gyroscope","Gyroscope ",codeBook)
 codeBook <- gsub("Magnitude","Magnitude ",codeBook)
 # Axis
 codeBook <- gsub("X","(X Axis)",codeBook)
