@@ -4,21 +4,21 @@ The tidyData data set consists of:
 - 180s rows which correspond to the statistical average of data for 30 subjects each performing 6 activities.
 - 68 columns of summary statistics for each combination of subject and activity.
 
-*** Codebook ***
-Code Book Data file
+NOTE: No unit information was available for the initial data file. Where possible, enumerated data has been listed
 
 [1] Activity
 	 Activity Description
-		 walking
-		 walkingUpstairs
-		 walkingDownstairs
+		 laying
 		 sitting
 		 standing
-		 laying
+		 walking
+		 walkingDownstairs
+		 walkingUpstairs 
 
 
 [2] Subject
-	 Test Subject
+	 Test Subject Enumeration
+	 Range: 1 - 30
 
 
 [3] timeBodyAccelerationMeanX
