@@ -80,7 +80,7 @@ The data is processed in the following steps:
   - The regex will search for feature labels containing 1 instance of either "mean" or "std" followed by "()"
   - Identified labels are returned using "grep()"
   - Measurement data is subsetted based upon labels returned by the regex, plus Activity and Subject data
-5/ Activity names are converted to lowerCamelClass
+5. Activity names are converted to lowerCamelClass
   - Helper functions are included for conversion to Upper and Lower Camel Case
   - Lower Camel Case was selected due to increase readability for long names
 6. Activity data is sorted first alphabetically by activity and then numerically, by subject number.</li>
