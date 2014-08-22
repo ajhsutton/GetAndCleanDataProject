@@ -1,9 +1,10 @@
 # GetAndCleanDataProject
 ======================
 ## Submission: ajsutton
-----------------------
-Course Project: Coursera Getting and Cleaning Data
+###Course Project: Coursera Getting and Cleaning Data
 
+
+### Introduction
 This project includes the files and data required for the "Getting and Cleaning Data" Course Project.
 The aim of the project is the generation of a 'clean' data set based upon version #1 of the "Human Activity Recognition Using Smartphones Dataset" data set from:
 Jorge L. Reyes-Ortiz, Davide Anguita, Alessandro Ghio, Luca Oneto.
